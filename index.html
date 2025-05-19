@@ -1,0 +1,2717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <title>Solana Token Creator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+    
+    body {
+      background-color: #000;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
+      background-image: linear-gradient(to bottom, #000000, #050510);
+      position: relative;
+      overflow-x: hidden;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+      z-index: 10;
+    }
+    
+    /* Background Effects */
+    .bg-blur {
+      position: absolute;
+      top: -50%;
+      left: -20%;
+      width: 140%;
+      height: 200%;
+      background: rgb(76, 29, 149);
+      opacity: 0.05;
+      filter: blur(100px);
+      border-radius: 100%;
+      transform: rotate(-15deg);
+      z-index: 1;
+      overflow: hidden;
+    }
+    
+    .blurry-text {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.05;
+      z-index: 1;
+      overflow: hidden;
+      user-select: none;
+      pointer-events: none;
+      font-size: 20px;
+      line-height: 1.5;
+      white-space: nowrap;
+    }
+    
+    /* Header Styles */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      margin-top: 1rem;
+      position: relative;
+      z-index: 10;
+    }
+    
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .logo {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      background: linear-gradient(to right, #4c6ef5, #228be6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 10px rgba(76, 110, 245, 0.4);
+      cursor: pointer;
+    }
+    
+    .logo span {
+      color: white;
+      font-weight: bold;
+    }
+    
+    .site-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      background: linear-gradient(to right, #fff, #a0aec0);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .search-button, .menu-button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background-color 0.3s;
+    }
+    
+    .search-button:hover, .menu-button:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Card Styles */
+    .card {
+      background-color: rgba(26, 32, 44, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(45, 55, 72, 0.8);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.7), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+      position: relative;
+      overflow: hidden;
+      z-index: 10;
+    }
+    
+    /* Welcome Card Styles */
+    .welcome-card {
+      text-align: center;
+    }
+    
+    .welcome-card-content {
+      position: relative;
+    }
+    
+    .welcome-glow {
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      background: linear-gradient(to right, #9333ea, #f59e0b);
+      border-radius: 50%;
+      filter: blur(50px);
+      opacity: 0.2;
+      top: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: -1;
+    }
+    
+    .icon-circle {
+      margin: 0 auto 1.5rem;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(45, 55, 72, 1), rgba(26, 32, 44, 1));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+      position: relative;
+      z-index: 5;
+    }
+    
+    .wrench-icon {
+      width: 1.5rem;
+      height: 1.5rem;
+      filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.5));
+    }
+    
+    .card-title {
+      font-size: 2.25rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(to right, #fff, #a0aec0);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .card-subtitle {
+      color: #e2e8f0;
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+    
+    .bold-text {
+      font-weight: bold;
+    }
+    
+    .muted-text {
+      color: #a0aec0;
+      margin-bottom: 2rem;
+    }
+    
+    .primary-button {
+      background-color: white;
+      color: black;
+      font-weight: bold;
+      padding: 0.75rem 2rem;
+      border-radius: 9999px;
+      border: none;
+      width: 100%;
+      margin-bottom: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.3s;
+      box-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.1), 0 2px 4px -1px rgba(255, 255, 255, 0.06);
+    }
+    
+    .primary-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 7px 10px -3px rgba(255, 255, 255, 0.15), 0 4px 6px -2px rgba(255, 255, 255, 0.1);
+    }
+    
+    .primary-button::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to right, rgba(229, 231, 235, 0.1), rgba(255, 255, 255, 0.2));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    .primary-button:hover::after {
+      opacity: 1;
+    }
+    
+    .secondary-button {
+      background-color: rgba(45, 55, 72, 0.8);
+      color: white;
+      font-weight: bold;
+      padding: 0.75rem 2rem;
+      border-radius: 9999px;
+      border: 1px solid rgba(74, 85, 104, 0.5);
+      width: 100%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+    
+    .secondary-button:hover {
+      background-color: rgba(45, 55, 72, 1);
+      transform: translateY(-2px);
+    }
+    
+    .arrow-icon {
+      margin-left: 0.5rem;
+      width: 1rem;
+      height: 1rem;
+    }
+    
+    .footer-text {
+      text-align: center;
+      color: #718096;
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+    }
+    
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    label {
+      display: block;
+      color: #e2e8f0;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+    }
+    
+    input[type="text"],
+    input[type="number"],
+    select {
+      width: 100%;
+      background-color: rgba(26, 32, 44, 0.7);
+      color: white;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      border: 1px solid rgba(74, 85, 104, 0.7);
+      font-size: 1rem;
+      box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    select:focus {
+      outline: none;
+      border-color: #4c6ef5;
+      box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.3);
+    }
+    
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      background: linear-gradient(to right, #fff, #a0aec0);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .divider {
+      height: 1px;
+      background-color: rgba(74, 85, 104, 0.5);
+      margin: 1.5rem 0;
+    }
+    
+    /* Checkbox styles */
+    .custom-checkbox {
+      display: flex;
+      align-items: flex-start;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      background-color: rgba(26, 32, 44, 0.7);
+      border: 1px solid rgba(74, 85, 104, 0.7);
+      margin-bottom: 1rem;
+      transition: border-color 0.3s;
+    }
+    
+    .custom-checkbox:hover {
+      border-color: rgba(113, 128, 150, 0.8);
+    }
+    
+    .checkbox-container {
+      margin-top: 3px;
+      margin-right: 0.75rem;
+      position: relative;
+    }
+    
+    .checkbox-container input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      height: 0;
+      width: 0;
+    }
+    
+    .checkmark {
+      display: inline-block;
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 0.25rem;
+      border: 2px solid rgba(113, 128, 150, 0.8);
+      position: relative;
+      transition: all 0.3s;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+    
+    .checkbox-container input:checked ~ .checkmark {
+      background: linear-gradient(to right, #e2e8f0, #fff);
+      border-color: #e2e8f0;
+    }
+    
+    .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+      left: 6px;
+      top: 2px;
+      width: 5px;
+      height: 10px;
+      border: solid black;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+    
+    .checkbox-container input:checked ~ .checkmark:after {
+      display: block;
+    }
+    
+    .checkbox-content {
+      flex: 1;
+    }
+    
+    .checkbox-title {
+      color: white;
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .recommended-badge {
+      background-color: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+      font-size: 0.7rem;
+      font-weight: bold;
+      padding: 0.2rem 0.4rem;
+      border-radius: 0.25rem;
+      margin-left: 0.5rem;
+      display: flex;
+      align-items: center;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+    
+    .checkbox-description {
+      color: #a0aec0;
+      font-size: 0.875rem;
+      margin-bottom: 0.25rem;
+    }
+    
+    .fee-text {
+      color: #4c6ef5;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    
+    .total-cost {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background-color: rgba(26, 32, 44, 0.7);
+      border-radius: 0.5rem;
+      border: 1px solid rgba(74, 85, 104, 0.7);
+      margin-bottom: 1.5rem;
+    }
+    
+    .total-cost-label {
+      font-size: 1.125rem;
+      font-weight: bold;
+      color: white;
+    }
+    
+    .total-cost-value {
+      font-size: 1.25rem;
+      font-weight: bold;
+      background: linear-gradient(to right, #f59e0b, #fcd34d);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    /* Logo Upload Area */
+    .logo-upload {
+      border: 2px dashed rgba(74, 85, 104, 0.7);
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      text-align: center;
+      background-color: rgba(26, 32, 44, 0.4);
+      position: relative;
+    }
+    
+    .logo-upload input[type="file"] {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+    
+    .upload-icon {
+      color: #a0aec0;
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .upload-text {
+      color: #a0aec0;
+      margin-bottom: 0.5rem;
+    }
+    
+    .upload-subtext {
+      color: #718096;
+      font-size: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    
+    .browse-button {
+      background-color: rgba(45, 55, 72, 1);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .browse-button:hover {
+      background-color: rgba(74, 85, 104, 1);
+    }
+    
+    /* Toggle Switch */
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 3rem;
+      height: 1.5rem;
+      margin-right: 0.75rem;
+    }
+    
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(45, 55, 72, 1);
+      transition: .4s;
+      border-radius: 34px;
+    }
+    
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 1rem;
+      width: 1rem;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .toggle-slider {
+      background-color: #4c6ef5;
+    }
+    
+    input:checked + .toggle-slider:before {
+      transform: translateX(1.5rem);
+    }
+    
+    .toggle-label {
+      color: #e2e8f0;
+      font-size: 0.95rem;
+    }
+    
+    /* Social Media Section */
+    .social-media-section {
+      display: none;
+      background-color: rgba(26, 32, 44, 0.4);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-top: 1rem;
+      border: 1px solid rgba(74, 85, 104, 0.7);
+    }
+    
+    /* Payment Modal Styles */
+    .payment-header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .payment-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 0.25rem;
+      background: linear-gradient(to right, #fff, #a0aec0);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .payment-subtitle {
+      color: #e2e8f0;
+      font-size: 1.1rem;
+    }
+    
+    .payment-summary {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background-color: rgba(26, 32, 44, 0.7);
+      border-radius: 0.5rem;
+      border: 1px solid rgba(74, 85, 104, 0.7);
+      margin-bottom: 1rem;
+    }
+    
+    .payment-amount {
+      font-size: 1.5rem;
+      font-weight: bold;
+      background: linear-gradient(to right, #fff, #a0aec0);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .payment-usd {
+      color: #a0aec0;
+      font-size: 1rem;
+    }
+    
+    .network-info {
+      background-color: rgba(26, 32, 44, 0.4);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .network-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    
+    .network-label {
+      color: #a0aec0;
+      font-weight: 500;
+      margin-right: 0.5rem;
+    }
+    
+    .info-icon {
+      width: 1rem;
+      height: 1rem;
+      color: #a0aec0;
+    }
+    
+    .fee-row {
+      display: flex;
+      align-items: center;
+    }
+    
+    .fee-circle {
+      width: 1.25rem;
+      height: 1.25rem;
+      border-radius: 50%;
+      background-color: rgba(45, 55, 72, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 0.5rem;
+      font-size: 0.75rem;
+      color: #a0aec0;
+    }
+    
+    .payment-box {
+      background-color: rgba(26, 32, 44, 0.7);
+      border-radius: 0.5rem;
+      border: 1px solid rgba(74, 85, 104, 0.7);
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+    
+    .wallet-address-section {
+      padding: 1rem;
+    }
+    
+    .wallet-label {
+      color: #a0aec0;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+    }
+    
+    .wallet-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: rgba(26, 32, 44, 0.4);
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      border: 1px solid rgba(74, 85, 104, 0.4);
+    }
+    
+    .wallet-address {
+      color: #e2e8f0;
+      font-family: monospace;
+      font-size: 0.95rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 80%;
+    }
+    
+    .wallet-buttons {
+      display: flex;
+    }
+    
+    .wallet-button {
+      background: none;
+      border: none;
+      color: white;
+      margin-left: 0.5rem;
+      cursor: pointer;
+      width: 2rem;
+      height: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background-color 0.3s;
+    }
+    
+    .wallet-button:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .notification-text {
+      color: #a0aec0;
+      font-size: 0.875rem;
+      padding: 0.5rem 1rem 1rem;
+    }
+    
+    .email-link {
+      color: #4c6ef5;
+      text-decoration: none;
+    }
+    
+    .email-link:hover {
+      text-decoration: underline;
+    }
+    
+    .payment-divider {
+      height: 1px;
+      background-color: rgba(74, 85, 104, 0.5);
+    }
+    
+    .timer-row, .transaction-row {
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+    }
+    
+    .timer-icon, .transaction-icon {
+      position: relative;
+      width: 1.5rem;
+      height: 1.5rem;
+      margin-right: 1rem;
+    }
+    
+    .timer-circle, .transaction-circle {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 2px solid #10b981;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    
+    .timer-progress, .transaction-progress {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 2px solid #10b981;
+      border-right-color: transparent;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    
+    .transaction-progress {
+      animation: spin 2s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .timer-label, .transaction-label {
+      color: white;
+      font-weight: 500;
+      flex: 1;
+    }
+    
+    .timer-value {
+      color: #10b981;
+      font-weight: 500;
+      font-family: monospace;
+    }
+    
+    .or-divider {
+      position: relative;
+      text-align: center;
+      margin: 1.5rem 0;
+      color: #a0aec0;
+    }
+    
+    .or-divider::before, .or-divider::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 40%;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(74, 85, 104, 0.5), transparent);
+    }
+    
+    .or-divider::before {
+      left: 0;
+    }
+    
+    .or-divider::after {
+      right: 0;
+    }
+    
+    .cryptomus-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(45, 55, 72, 0.8);
+      color: white;
+      font-weight: bold;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid rgba(74, 85, 104, 0.5);
+      width: 100%;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s;
+    }
+    
+    .cryptomus-button:hover {
+      background-color: rgba(45, 55, 72, 1);
+    }
+    
+    .cryptomus-icon {
+      background-color: black;
+      padding: 0.25rem;
+      border-radius: 0.25rem;
+      margin-right: 0.75rem;
+    }
+    
+    /* Status Message */
+    .status-message {
+      background-color: rgba(26, 32, 44, 0.7);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-top: 1rem;
+      border-left: 3px solid;
+      display: none;
+    }
+    
+    .status-message.success {
+      border-left-color: #10b981;
+      color: #10b981;
+      display: block;
+    }
+    
+    .status-message.error {
+      border-left-color: #ef4444;
+      color: #ef4444;
+      display: block;
+    }
+    
+    .token-address {
+      background-color: rgba(26, 32, 44, 0.7);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-top: 1rem;
+      border: 1px solid rgba(74, 85, 104, 0.7);
+      display: none;
+    }
+    
+    .token-address.show {
+      display: block;
+    }
+    
+    .token-address-label {
+      color: #a0aec0;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+    }
+    
+    .token-address-value {
+      color: #10b981;
+      font-family: monospace;
+      word-break: break-all;
+    }
+    
+    /* Feature Highlights */
+    .feature-highlights {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .feature {
+      background-color: rgba(26, 32, 44, 0.7);
+      border-radius: 0.75rem;
+      padding: 1rem;
+      border: 1px solid rgba(45, 55, 72, 0.8);
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+    }
+    
+    .feature:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.7);
+      border-color: rgba(74, 85, 104, 0.8);
+    }
+    
+    .feature-icon {
+      background: linear-gradient(135deg, rgba(45, 55, 72, 1), rgba(26, 32, 44, 1));
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.75rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      color: #a0aec0;
+    }
+    
+    .feature-title {
+      font-weight: bold;
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+      color: white;
+    }
+    
+    .feature-description {
+      font-size: 0.8rem;
+      color: #a0aec0;
+      line-height: 1.2;
+    }
+    
+    @media (max-width: 480px) {
+      .feature-highlights {
+        grid-template-columns: 1fr;
+      }
+      
+      .form-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+    }
+    
+    /* Sidebar Navigation */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      right: -300px;
+      width: 300px;
+      height: 100%;
+      background-color: rgba(17, 24, 39, 0.95);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      transition: right 0.3s ease;
+      box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+      overflow-y: auto;
+      padding: 2rem 1rem;
+    }
+    
+    .sidebar.open {
+      right: 0;
+    }
+    
+    .sidebar-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease;
+    }
+    
+    .sidebar-backdrop.open {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .sidebar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(74, 85, 104, 0.5);
+    }
+    
+    .close-sidebar {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.5rem;
+      color: white;
+      text-decoration: none;
+      border-radius: 0.5rem;
+      transition: background-color 0.3s;
+    }
+    
+    .nav-item:hover {
+      background-color: rgba(74, 85, 104, 0.5);
+    }
+    
+    .nav-item.active {
+      background-color: rgba(76, 110, 245, 0.2);
+      border-left: 3px solid #4c6ef5;
+    }
+    
+    .nav-item-icon {
+      margin-right: 0.75rem;
+      color: #a0aec0;
+    }
+    
+    .nav-item.active .nav-item-icon {
+      color: #4c6ef5;
+    }
+    
+    .nav-item-label {
+      font-weight: 500;
+    }
+    
+    /* Screens */
+    .screen {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    
+    .screen.active {
+      display: block;
+      opacity: 1;
+    }
+    
+    /* Liquidity Adder */
+    .liquidity-group {
+      margin-bottom: 1.5rem;
+      background-color: rgba(26, 32, 44, 0.7);
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      border: 1px solid rgba(74, 85, 104, 0.7);
+    }
+    
+    .liquidity-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(74, 85, 104, 0.5);
+    }
+    
+    .liquidity-title {
+      font-weight: bold;
+      font-size: 1.25rem;
+      color: white;
+    }
+    
+    .help-icon {
+      color: #a0aec0;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    
+    .help-icon:hover {
+      color: white;
+    }
+    
+    .slippage-options {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    
+    .slippage-option {
+      background-color: rgba(45, 55, 72, 0.8);
+      border: 1px solid rgba(74, 85, 104, 0.5);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+    
+    .slippage-option:hover {
+      background-color: rgba(45, 55, 72, 1);
+    }
+    
+    .slippage-option.active {
+      background-color: rgba(76, 110, 245, 0.2);
+      border-color: #4c6ef5;
+      color: #4c6ef5;
+    }
+    
+    .custom-slippage {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    
+    .custom-slippage input {
+      width: 5rem;
+      background-color: rgba(26, 32, 44, 0.7);
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      border: 1px solid rgba(74, 85, 104, 0.7);
+      font-size: 0.875rem;
+    }
+    
+    .custom-slippage .percent {
+      color: #a0aec0;
+    }
+    
+    /* Liquidity Portfolio */
+    .portfolio-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .portfolio-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: white;
+    }
+    
+    .portfolio-balance {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: #10b981;
+    }
+    
+    .portfolio-item {
+      background-color: rgba(26, 32, 44, 0.7);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(74, 85, 104, 0.7);
+      transition: border-color 0.3s;
+      cursor: pointer;
+    }
+    
+    .portfolio-item:hover {
+      border-color: rgba(113, 128, 150, 0.8);
+    }
+    
+    .portfolio-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    
+    .pool-name {
+      font-weight: bold;
+      color: white;
+    }
+    
+    .pool-value {
+      color: #10b981;
+      font-weight: bold;
+    }
+    
+    .pool-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.875rem;
+      color: #a0aec0;
+    }
+    
+    /* Withdrawal Modal */
+    .withdrawal-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s;
+    }
+    
+    .withdrawal-modal.open {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .withdrawal-content {
+      background-color: rgba(26, 32, 44, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 1rem;
+      padding: 2rem;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(74, 85, 104, 0.5);
+    }
+    
+    .withdrawal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(74, 85, 104, 0.5);
+    }
+    
+    .withdrawal-title {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: white;
+    }
+    
+    .close-modal {
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .withdrawal-options {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .withdrawal-option {
+      flex: 1;
+      background-color: rgba(45, 55, 72, 0.8);
+      border: 1px solid rgba(74, 85, 104, 0.5);
+      color: white;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      text-align: center;
+      cursor: pointer;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+    
+    .withdrawal-option:hover {
+      background-color: rgba(45, 55, 72, 1);
+    }
+    
+    .withdrawal-option.active {
+      background-color: rgba(76, 110, 245, 0.2);
+      border-color: #4c6ef5;
+      color: #4c6ef5;
+    }
+    
+    .withdrawal-details {
+      background-color: rgba(26, 32, 44, 0.7);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(74, 85, 104, 0.7);
+    }
+    
+    .withdrawal-detail-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+    
+    .withdrawal-detail-label {
+      color: #a0aec0;
+    }
+    
+    .withdrawal-detail-value {
+      color: white;
+      font-weight: 500;
+    }
+    
+    /* Popup modal */
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    
+    .popup-content {
+      background-color: rgba(17, 24, 39, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 1rem;
+      padding: 2rem;
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(74, 85, 104, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .confetti-container {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      top: -10px;
+      animation: confetti-fall 3s linear infinite;
+    }
+    
+    @keyframes confetti-fall {
+      0% {
+        transform: translateY(-10px) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(500px) rotate(720deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Elements -->
+  <div class="bg-blur"></div>
+  <div class="blurry-text">
+    Solana Token Creation process. No hidden costs transparent and simple to explain. Very easy to use with its user-friendly interface and transparent pricing. No coding knowledge needed to launch new Solana Token. There are many people who always wanted to create their own token but never knew how. Now they can create easily. I love creating templates that solve problems for people.
+  </div>
+  
+  <!-- Sidebar Navigation -->
+  <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-section">
+        <div class="logo">
+          <span>S</span>
+        </div>
+        <span class="site-title">Solana Tracker</span>
+      </div>
+      <button id="closeSidebar" class="close-sidebar">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    
+    <nav>
+      <a href="#" class="nav-item active" data-screen="homeScreen">
+        <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        <span class="nav-item-label">Home</span>
+      </a>
+      
+      <a href="#" class="nav-item" data-screen="tokenCreatorScreen">
+        <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+        </svg>
+        <span class="nav-item-label">Token Creator</span>
+      </a>
+      
+      <a href="#" class="nav-item" data-screen="liquidityAdderScreen">
+        <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M16 12h-6.5a2.5 2.5 0 0 1 0-5H16"></path>
+          <path d="M8 12h6.5a2.5 2.5 0 0 1 0 5H8"></path>
+        </svg>
+        <span class="nav-item-label">Liquidity Adder</span>
+      </a>
+      
+      <a href="#" class="nav-item" data-screen="liquidityPortfolioScreen">
+        <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path>
+          <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path>
+          <path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path>
+        </svg>
+        <span class="nav-item-label">Liquidity Portfolio</span>
+      </a>
+      
+      <a href="#" class="nav-item">
+        <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <circle cx="12" cy="10" r="3"></circle>
+          <path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"></path>
+        </svg>
+        <span class="nav-item-label">Account</span>
+      </a>
+      
+      <a href="#" class="nav-item">
+        <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+        <span class="nav-item-label">Settings</span>
+      </a>
+    </nav>
+  </div>
+  
+  <!-- Withdrawal Modal -->
+  <div id="withdrawalModal" class="withdrawal-modal">
+    <div class="withdrawal-content">
+      <div class="withdrawal-header">
+        <div class="withdrawal-title">Withdraw Liquidity</div>
+        <button id="closeWithdrawalModal" class="close-modal">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      
+      <div class="withdrawal-options">
+        <div class="withdrawal-option" data-percent="25">25%</div>
+        <div class="withdrawal-option" data-percent="50">50%</div>
+        <div class="withdrawal-option" data-percent="75">75%</div>
+        <div class="withdrawal-option active" data-percent="100">MAX</div>
+      </div>
+      
+      <div class="withdrawal-details">
+        <div class="withdrawal-detail-row">
+          <div class="withdrawal-detail-label">Token</div>
+          <div id="withdrawalToken" class="withdrawal-detail-value">TIDE</div>
+        </div>
+        <div class="withdrawal-detail-row">
+          <div class="withdrawal-detail-label">Amount</div>
+          <div id="withdrawalAmount" class="withdrawal-detail-value">50,000 TIDE</div>
+        </div>
+        <div class="withdrawal-detail-row">
+          <div class="withdrawal-detail-label">SOL</div>
+          <div id="withdrawalSol" class="withdrawal-detail-value">21.5 SOL</div>
+        </div>
+        <div class="withdrawal-detail-row">
+          <div class="withdrawal-detail-label">Value</div>
+          <div id="withdrawalValue" class="withdrawal-detail-value">$6,500.00</div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="walletAddress">Your Solana Wallet Address</label>
+        <input type="text" id="walletAddress" placeholder="Enter your wallet address">
+      </div>
+      
+      <button id="confirmWithdrawal" class="primary-button" style="background: linear-gradient(to right, #10b981, #059669); color: white;">
+        Confirm Withdrawal
+      </button>
+    </div>
+  </div>
+  
+  <div class="container">
+    <!-- Common Header -->
+    <header>
+      <div class="logo-section">
+        <div class="logo">
+          <span>S</span>
+        </div>
+        <h1 id="headerTitle" class="site-title">Solana Tracker</h1>
+      </div>
+      <div>
+        <button class="search-button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+        <button id="openSidebar" class="menu-button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+    
+    <!-- Home Screen -->
+    <div id="homeScreen" class="screen active">
+      <div class="card welcome-card">
+        <div class="welcome-card-content">
+          <div class="welcome-glow"></div>
+          <div class="icon-circle">
+            <svg class="wrench-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+            </svg>
+          </div>
+          <h2 class="card-title">Solana Token Creator</h2>
+          <p class="card-subtitle">Create Solana tokens, very cheap<br>and easy.</p>
+          <p class="bold-text">No coding required</p>
+          <p class="muted-text">Transparent pricing and no hidden fees.</p>
+          
+          <button id="createTokenNavigateBtn" class="primary-button">
+            Create Token
+            <svg class="arrow-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
+          </button>
+          
+          <button class="secondary-button">
+            FAQ
+            <svg class="arrow-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Feature Highlights -->
+      <div class="feature-highlights">
+        <div class="feature">
+          <div class="feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+          </div>
+          <div class="feature-title">Secure</div>
+          <div class="feature-description">Fully secure token creation with revokable authorities</div>
+        </div>
+        
+        <div class="feature">
+          <div class="feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+            </svg>
+          </div>
+          <div class="feature-title">Fast</div>
+          <div class="feature-description">Create tokens in under 5 minutes on Solana</div>
+        </div>
+        
+        <div class="feature">
+          <div class="feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+              <line x1="9" x2="9.01" y1="9" y2="9"></line>
+              <line x1="15" x2="15.01" y1="9" y2="9"></line>
+            </svg>
+          </div>
+          <div class="feature-title">User-Friendly</div>
+          <div class="feature-description">No coding knowledge required</div>
+        </div>
+        
+        <div class="feature">
+          <div class="feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v20"></path>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+          </div>
+          <div class="feature-title">Affordable</div>
+          <div class="feature-description">Low fees and transparent pricing</div>
+        </div>
+      </div>
+      
+      <p class="footer-text">solanatracker.io</p>
+    </div>
+    
+    <!-- Token Creator Screen -->
+    <div id="tokenCreatorScreen" class="screen">
+      <div class="card">
+        <h2 class="section-title">Create Your Token</h2>
+        
+        <div class="form-group">
+          <label for="tokenName">Token Name*</label>
+          <input type="text" id="tokenName" placeholder="Token Name (e.g. TIDE)" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="tokenSymbol">Token Symbol*</label>
+          <input type="text" id="tokenSymbol" placeholder="Symbol (e.g. TIDE)" required>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="tokenDecimals">Decimals</label>
+            <input type="number" id="tokenDecimals" value="9">
+          </div>
+          <div class="form-group">
+            <label for="tokenSupply">Initial Supply</label>
+            <input type="number" id="tokenSupply" value="1000000">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>Logo (Optional)</label>
+          <div class="logo-upload">
+            <input type="file" id="tokenLogo" accept="image/png, image/jpeg">
+            <div class="upload-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 7.04c-.29-.3-1.15-.45-2.29.66C3.57 8.6 3 9.7 3 10.25c0 2.22 1.8 4.05 4 4.05z"></path>
+                <path d="M21 15.8c-2.2 0-4-1.6-4-3.5 0-1.06.4-2.4 1.5-3.2-1.45.35-2 1.5-2 2.25 0 .9 1 2.25 3 2.25" fill="currentColor"></path>
+                <path d="M3 15.8a4 4 0 0 0 4-3.5c0-1.06-.4-2.4-1.5-3.2 1.45.35 2 1.5 2 2.25 0 .9-1 2.25-3 2.25"></path>
+                <path d="M12 12v9"></path>
+                <path d="m16 16-4-4-4 4"></path>
+              </svg>
+            </div>
+            <p class="upload-text">Drag and drop your token logo here</p>
+            <p class="upload-subtext">PNG or JPG (Recommended size: 500x500px)</p>
+            <button class="browse-button">Browse Files</button>
+          </div>
+        </div>
+        
+        <div class="toggle-container">
+          <label class="toggle-switch">
+            <input type="checkbox" id="socialTags">
+            <span class="toggle-slider"></span>
+          </label>
+          <span class="toggle-label">Social Tags (Optional)</span>
+        </div>
+        
+        <div id="socialMediaSection" class="social-media-section">
+          <div class="form-group">
+            <label for="twitterHandle">Twitter</label>
+            <input type="text" id="twitterHandle" placeholder="@yourhandle">
+          </div>
+          <div class="form-group">
+            <label for="telegramGroup">Telegram</label>
+            <input type="text" id="telegramGroup" placeholder="t.me/yourgroup">
+          </div>
+          <div class="form-group">
+            <label for="website">Website</label>
+            <input type="text" id="website" placeholder="https://yourwebsite.com">
+          </div>
+        </div>
+        
+        <div class="divider"></div>
+        
+        <h3 class="section-title">Security Options</h3>
+        
+        <label class="custom-checkbox">
+          <div class="checkbox-container">
+            <input type="checkbox" id="revokeMintAuthority" checked>
+            <span class="checkmark"></span>
+          </div>
+          <div class="checkbox-content">
+            <div class="checkbox-title">
+              Revoke Mint Authority
+              <span class="recommended-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
+                  <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                Recommended
+              </span>
+            </div>
+            <div class="checkbox-description">Revoke right to mint new coins, this shows buyer of your coin that supply is fixed and cannot grow. DEX scanners will mark your coin as safe.</div>
+            <div class="fee-text">Fee: 0.1 SOL</div>
+          </div>
+        </label>
+        
+        <label class="custom-checkbox">
+          <div class="checkbox-container">
+            <input type="checkbox" id="revokeFreeze">
+            <span class="checkmark"></span>
+          </div>
+          <div class="checkbox-content">
+            <div class="checkbox-title">
+              Revoke Freeze Authority
+              <span class="recommended-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
+                  <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                Recommended
+              </span>
+            </div>
+            <div class="checkbox-description">Revoke freeze right, you will make coin safer for potential buyers of your coin and get more sales. DEX scanners will mark your coin as safe.</div>
+            <div class="fee-text">Fee: 0.1 SOL</div>
+          </div>
+        </label>
+        
+        <label class="custom-checkbox">
+          <div class="checkbox-container">
+            <input type="checkbox" id="revokeMetadataAuthority">
+            <span class="checkmark"></span>
+          </div>
+          <div class="checkbox-content">
+            <div class="checkbox-title">
+              Revoke Metadata Authority
+              <span class="recommended-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
+                  <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                Recommended
+              </span>
+            </div>
+            <div class="checkbox-description">Revoke ability to change token metadata, showing buyers that the token details are fixed and cannot be altered. Improves trust and security.</div>
+            <div class="fee-text">Fee: 0.1 SOL</div>
+          </div>
+        </label>
+        
+        <div class="divider"></div>
+        
+        <h3 class="section-title">Features</h3>
+        
+        <label class="custom-checkbox">
+          <div class="checkbox-container">
+            <input type="checkbox" id="customCreator">
+            <span class="checkmark"></span>
+          </div>
+          <div class="checkbox-content">
+            <div class="checkbox-title">
+              Custom Creator Info
+              <span class="recommended-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
+                  <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                Recommended
+              </span>
+              <span style="background: linear-gradient(to right, #f59e0b, #dc2626); color: white; font-size: 0.7rem; padding: 0.15rem 0.4rem; border-radius: 0.25rem; margin-left: 0.5rem; vertical-align: middle; display: inline-block; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);">New</span>
+            </div>
+            <div class="checkbox-description">Change information about token creator in token metadata</div>
+            <div class="fee-text">Fee: 0.1 SOL</div>
+          </div>
+        </label>
+        
+        <div id="creatorInfoSection" style="display: none; margin-top: 1rem; margin-bottom: 1.5rem;">
+          <div class="form-group" style="background-color: rgba(26, 32, 44, 0.4); padding: 1rem; border-radius: 0.5rem; border: 1px solid rgba(74, 85, 104, 0.7);">
+            <label for="creatorName">Creator Name</label>
+            <input type="text" id="creatorName" placeholder="Your name or organization">
+          </div>
+          <div class="form-group" style="background-color: rgba(26, 32, 44, 0.4); padding: 1rem; border-radius: 0.5rem; border: 1px solid rgba(74, 85, 104, 0.7);">
+            <label for="creatorWebsite">Creator Website</label>
+            <input type="text" id="creatorWebsite" placeholder="https://your-website.com">
+          </div>
+          <div class="form-group" style="background-color: rgba(26, 32, 44, 0.4); padding: 1rem; border-radius: 0.5rem; border: 1px solid rgba(74, 85, 104, 0.7);">
+            <label for="creatorEmail">Creator Email</label>
+            <input type="text" id="creatorEmail" placeholder="your@email.com">
+          </div>
+        </div>
+        
+        <div class="divider"></div>
+        
+        <div class="total-cost">
+          <div class="total-cost-label">Total Cost:</div>
+          <div id="totalCost" class="total-cost-value">0.2 SOL</div>
+        </div>
+        
+        <button id="submitTokenBtn" class="primary-button" style="background: linear-gradient(to right, #f59e0b, #fcd34d); color: black; margin-bottom: 0;">
+          Create Token
+        </button>
+      </div>
+    </div>
+    
+    <!-- Liquidity Adder Screen -->
+    <div id="liquidityAdderScreen" class="screen">
+      <div class="card">
+        <h2 class="section-title">Add Liquidity</h2>
+        
+        <div class="form-group">
+          <label for="lpTokenAddress">Token Address*</label>
+          <input type="text" id="lpTokenAddress" placeholder="Enter your token address" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="lpTokenName">Token Name*</label>
+          <input type="text" id="lpTokenName" placeholder="Token name" required>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="lpTokenSymbol">Token Symbol*</label>
+            <input type="text" id="lpTokenSymbol" placeholder="Symbol" required>
+          </div>
+          <div class="form-group">
+            <label for="lpTokenDecimals">Decimals</label>
+            <input type="number" id="lpTokenDecimals" value="9">
+          </div>
+        </div>
+        
+        <div class="liquidity-group">
+          <div class="liquidity-header">
+            <div class="liquidity-title">Liquidity Options</div>
+            <div class="help-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                <path d="M12 17h.01"></path>
+              </svg>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="lpAmount">Amount of Tokens to Add*</label>
+            <input type="number" id="lpAmount" placeholder="e.g. 1000000" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="lpSolAmount">Amount of SOL to Add* (min 0.3 SOL)</label>
+            <input type="number" id="lpSolAmount" placeholder="e.g. 10" min="0.3" step="0.1" value="0.3" required>
+          </div>
+          
+          <div class="form-group">
+            <label>Slippage Tolerance</label>
+            <div class="slippage-options">
+              <div class="slippage-option active">0.5%</div>
+              <div class="slippage-option">1%</div>
+              <div class="slippage-option">2.5%</div>
+            </div>
+            <div class="custom-slippage">
+              <input type="number" id="customSlippage" placeholder="Custom">
+              <span class="percent">%</span>
+            </div>
+          </div>
+        </div>
+        
+        <button id="createLiquidityBtn" class="primary-button" style="background: linear-gradient(to right, #4c6ef5, #4f46e5); color: white; margin-bottom: 0;">
+          Add Liquidity
+        </button>
+      </div>
+    </div>
+    
+    <!-- Liquidity Portfolio Screen -->
+    <div id="liquidityPortfolioScreen" class="screen">
+      <div class="card">
+        <div class="portfolio-header">
+          <div class="portfolio-title">Your Liquidity</div>
+          <div id="portfolioBalance" class="portfolio-balance">$0.00</div>
+        </div>
+        
+        <div id="noLiquidityMessage" style="text-align: center; color: #a0aec0; padding: 2rem 0;">
+          You don't have any active liquidity pools.
+        </div>
+        
+        <div id="liquidityList" style="display: none;">
+          <!-- Liquidity pools will be added here dynamically -->
+        </div>
+        
+        <button id="refreshPortfolioBtn" class="secondary-button" style="margin-top: 1.5rem;">
+          Refresh Portfolio
+        </button>
+      </div>
+    </div>
+    
+    <!-- Payment Screen -->
+    <div id="paymentScreen" class="screen">
+      <div class="card">
+        <div class="payment-header">
+          <h2 id="paymentTitle" class="payment-title">TIDE Token</h2>
+          <p class="payment-subtitle">Payment Required</p>
+        </div>
+        
+        <div class="payment-summary">
+          <div id="paymentAmount" class="payment-amount">0.2 SOL</div>
+          <div id="paymentUsd" class="payment-usd">33.40 USD</div>
+        </div>
+        
+        <div class="network-info">
+          <div class="network-row">
+            <span class="network-label">Network · SOL</span>
+            <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12 16v-4"></path>
+              <path d="M12 8h.01"></path>
+            </svg>
+          </div>
+          <div class="fee-row">
+            <div class="fee-circle">ⓘ</div>
+            <span class="network-label">You pay network fee</span>
+          </div>
+        </div>
+        
+        <div class="payment-box">
+          <div class="wallet-address-section">
+            <div class="wallet-label">Recipient's wallet address</div>
+            <div class="wallet-row">
+              <div class="wallet-address">AvRFRpu...</div>
+              <div class="wallet-buttons">
+                <button class="wallet-button">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
+                    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>
+                  </svg>
+                </button>
+                <button class="wallet-button">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="6" height="6" x="9" y="9" rx="1"></rect>
+                    <path d="M8 4h8"></path>
+                    <path d="M4 8V4h4"></path>
+                    <path d="M4 8v8"></path>
+                    <path d="M12 20H4"></path>
+                    <path d="M20 12v8"></path>
+                    <path d="M20 12h-8"></path>
+                    <path d="M16 20h4"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="notification-text">
+              When your payment status will change, we'll send to you notification <a href="#" class="email-link">Leave your email</a>
+            </div>
+          </div>
+          
+          <div class="payment-divider"></div>
+          
+          <div class="timer-row">
+            <div class="timer-icon">
+              <div class="timer-circle"></div>
+              <div class="timer-progress"></div>
+            </div>
+            <div class="timer-label">Expiration time</div>
+            <div id="timerValue" class="timer-value">45:00</div>
+          </div>
+          
+          <div class="transaction-row">
+            <div class="transaction-icon">
+              <div class="transaction-circle"></div>
+              <div class="transaction-progress"></div>
+            </div>
+            <div class="transaction-label">Checking blockchain transaction</div>
+          </div>
+        </div>
+        
+        <div id="statusMessage" class="status-message">
+          <!-- Status message will appear here -->
+        </div>
+        
+        <div id="tokenAddress" class="token-address">
+          <div class="token-address-label">Your token contract address:</div>
+          <div class="token-address-value">soL1c5THZ8hZv8pRXRxvYjZQmNGJpZMgHdH3YsHrKTCe5UTHgfCHQo6kE</div>
+        </div>
+        
+        <div class="or-divider">OR</div>
+        
+        <button id="manualPaymentBtn" class="cryptomus-button" style="display: none;">
+          <div class="cryptomus-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="24" height="24" rx="4" fill="#1A1A1A"/>
+              <path d="M12 5L7 10H17L12 5Z" fill="white"/>
+              <path d="M12 19L17 14H7L12 19Z" fill="white"/>
+            </svg>
+          </div>
+          Pay with Cryptomus
+        </button>
+        
+        <button id="checkPaymentBtn" class="primary-button" style="margin-top: 1rem; background: linear-gradient(to right, #10b981, #059669); color: white;">
+          Check Payment Status
+        </button>
+        
+        <button id="backFromPaymentBtn" class="secondary-button" style="margin-top: 1rem;">
+          Back
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Wait for page to fully load
+    window.addEventListener('load', function() {
+      // Payment addresses to rotate through
+      const paymentAddresses = [
+        'AvRFRpuYrN2S983NcKzgENEbYriiVApTQ3UoLtj4bmoe',
+        'F1jpUpHCwTWntPPz4TzUtc6x42ByFEhoX5GqPPsiN6gj',
+        'CvFrrbJ6DJNCGb3mfkrS2BGG6LHobqRYSvJntgqixV2C',
+        'HGV6cAqHn2bMm825m8p3EWSJ5b3MQdtR821PaTaYuL5r'
+      ];
+      let currentAddressIndex = 0;
+      
+      // App state
+      const state = {
+        currentScreen: 'homeScreen',
+        timerSeconds: 45 * 60, // 45 minutes
+        paymentTimer: null,
+        countdownInterval: null,
+        isLiquidityPayment: false,
+        currentLpTokenName: '',
+        userPools: []
+      };
+      
+      // DOM elements
+      const elements = {
+        screens: {
+          homeScreen: document.getElementById('homeScreen'),
+          tokenCreatorScreen: document.getElementById('tokenCreatorScreen'),
+          liquidityAdderScreen: document.getElementById('liquidityAdderScreen'),
+          liquidityPortfolioScreen: document.getElementById('liquidityPortfolioScreen'),
+          paymentScreen: document.getElementById('paymentScreen')
+        },
+        sidebar: {
+          sidebar: document.getElementById('sidebar'),
+          backdrop: document.getElementById('sidebarBackdrop'),
+          openBtn: document.getElementById('openSidebar'),
+          closeBtn: document.getElementById('closeSidebar'),
+          navItems: document.querySelectorAll('.nav-item')
+        },
+        header: {
+          title: document.getElementById('headerTitle')
+        },
+        tokenCreator: {
+          name: document.getElementById('tokenName'),
+          symbol: document.getElementById('tokenSymbol'),
+          decimals: document.getElementById('tokenDecimals'),
+          supply: document.getElementById('tokenSupply'),
+          logoInput: document.getElementById('tokenLogo'),
+          socialToggle: document.getElementById('socialTags'),
+          socialSection: document.getElementById('socialMediaSection'),
+          revokeMint: document.getElementById('revokeMintAuthority'),
+          revokeFreeze: document.getElementById('revokeFreeze'),
+          revokeMetadata: document.getElementById('revokeMetadataAuthority'),
+          customCreator: document.getElementById('customCreator'),
+          creatorSection: document.getElementById('creatorInfoSection'),
+          totalCost: document.getElementById('totalCost'),
+          submitBtn: document.getElementById('submitTokenBtn')
+        },
+        liquidityAdder: {
+          tokenAddress: document.getElementById('lpTokenAddress'),
+          tokenName: document.getElementById('lpTokenName'),
+          tokenSymbol: document.getElementById('lpTokenSymbol'),
+          tokenDecimals: document.getElementById('lpTokenDecimals'),
+          tokenAmount: document.getElementById('lpAmount'),
+          solAmount: document.getElementById('lpSolAmount'),
+          slippageOptions: document.querySelectorAll('.slippage-option'),
+          customSlippage: document.getElementById('customSlippage'),
+          addBtn: document.getElementById('createLiquidityBtn')
+        },
+        liquidityPortfolio: {
+          balance: document.getElementById('portfolioBalance'),
+          noLiquidityMsg: document.getElementById('noLiquidityMessage'),
+          liquidityList: document.getElementById('liquidityList'),
+          refreshBtn: document.getElementById('refreshPortfolioBtn')
+        },
+        payment: {
+          title: document.getElementById('paymentTitle'),
+          amount: document.getElementById('paymentAmount'),
+          usd: document.getElementById('paymentUsd'),
+          walletAddress: document.querySelector('.wallet-address'),
+          timerValue: document.getElementById('timerValue'),
+          manualBtn: document.getElementById('manualPaymentBtn'),
+          checkBtn: document.getElementById('checkPaymentBtn'),
+          backBtn: document.getElementById('backFromPaymentBtn'),
+          statusMsg: document.getElementById('statusMessage'),
+          tokenAddress: document.getElementById('tokenAddress'),
+          tokenAddressValue: document.querySelector('.token-address-value')
+        },
+        withdrawalModal: {
+          modal: document.getElementById('withdrawalModal'),
+          closeBtn: document.getElementById('closeWithdrawalModal'),
+          options: document.querySelectorAll('.withdrawal-option'),
+          token: document.getElementById('withdrawalToken'),
+          amount: document.getElementById('withdrawalAmount'),
+          sol: document.getElementById('withdrawalSol'),
+          value: document.getElementById('withdrawalValue'),
+          walletAddress: document.getElementById('walletAddress'),
+          confirmBtn: document.getElementById('confirmWithdrawal')
+        },
+        buttons: {
+          createTokenBtn: document.getElementById('createTokenNavigateBtn')
+        }
+      };
+      
+      // Utility functions
+      function formatTimer(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+      }
+      
+      function formatAddressForDisplay(address) {
+        return address.substring(0, 7) + '...';
+      }
+      
+      function getNextPaymentAddress() {
+        const address = paymentAddresses[currentAddressIndex];
+        currentAddressIndex = (currentAddressIndex + 1) % paymentAddresses.length;
+        return address;
+      }
+      
+      function generateRandomSolanaAddress() {
+        const chars = 'fplmckwodnworABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let address = '';
+        for (let i = 0; i < 40; i++) {
+          address += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return `${address}`;
+      }
+      
+      // UI functions
+      function updateTotalCost() {
+        let totalCost = 0.1; // Base cost
+        
+        if (elements.tokenCreator.revokeMint.checked) totalCost += 0.1;
+        if (elements.tokenCreator.revokeFreeze.checked) totalCost += 0.1;
+        if (elements.tokenCreator.revokeMetadata.checked) totalCost += 0.1;
+        if (elements.tokenCreator.customCreator.checked) totalCost += 0.1;
+        
+        elements.tokenCreator.totalCost.textContent = totalCost.toFixed(1) + ' SOL';
+        return totalCost;
+      }
+      
+      function showScreen(screenId) {
+        // Hide all screens
+        Object.values(elements.screens).forEach(screen => {
+          screen.classList.remove('active');
+        });
+        
+        // Show the selected screen
+        elements.screens[screenId].classList.add('active');
+        state.currentScreen = screenId;
+        
+        // Update header title
+        const titles = {
+          homeScreen: 'Solana Tracker',
+          tokenCreatorScreen: 'Token Creator',
+          liquidityAdderScreen: 'Liquidity Adder',
+          liquidityPortfolioScreen: 'Liquidity Portfolio',
+          paymentScreen: 'Payment'
+        };
+        elements.header.title.textContent = titles[screenId] || 'Solana Tracker';
+        
+        // Update active nav item
+        elements.sidebar.navItems.forEach(item => {
+          if (item.dataset.screen === screenId) {
+            item.classList.add('active');
+          } else {
+            item.classList.remove('active');
+          }
+        });
+        
+        // Close sidebar
+        closeSidebar();
+      }
+      
+      function startPaymentTimer() {
+        // Reset timer
+        state.timerSeconds = 45 * 60; // 45 minutes
+        updateTimerDisplay();
+        
+        // Clear any existing timers
+        clearTimeout(state.paymentTimer);
+        clearInterval(state.countdownInterval);
+        
+        // Start countdown
+        state.countdownInterval = setInterval(() => {
+          state.timerSeconds--;
+          updateTimerDisplay();
+          
+          if (state.timerSeconds <= 0) {
+            clearInterval(state.countdownInterval);
+          }
+        }, 1000);
+        
+        // Show manual payment button after 20 seconds
+        state.paymentTimer = setTimeout(() => {
+          elements.payment.manualBtn.style.display = 'flex';
+        }, 20000);
+      }
+      
+      function updateTimerDisplay() {
+        elements.payment.timerValue.textContent = formatTimer(state.timerSeconds);
+      }
+      
+      function showPaymentScreen(title, amount, isLiquidity = false) {
+        // Set payment details
+        elements.payment.title.textContent = title;
+        elements.payment.amount.textContent = `${amount.toFixed(1)} SOL`;
+        elements.payment.usd.textContent = `${(amount * 167).toFixed(2)} USD`;
+        
+        // Get a new payment address
+        const nextAddress = getNextPaymentAddress();
+        elements.payment.walletAddress.textContent = formatAddressForDisplay(nextAddress);
+        elements.payment.walletAddress.dataset.fullAddress = nextAddress;
+        
+        // Reset status message and token address
+        elements.payment.statusMsg.className = 'status-message';
+        elements.payment.statusMsg.style.display = 'none';
+        elements.payment.tokenAddress.classList.remove('show');
+        
+        // Set liquidity flag
+        state.isLiquidityPayment = isLiquidity;
+        
+        // Show the payment screen
+        showScreen('paymentScreen');
+        
+        // Start the payment timer
+        startPaymentTimer();
+        
+        // Hide the manual payment button (will be shown by the timer)
+        elements.payment.manualBtn.style.display = 'none';
+      }
+      
+      function showCongratsPopup(address, isLiquidity = false) {
+        // Create popup elements
+        const popupOverlay = document.createElement('div');
+        popupOverlay.className = 'popup-overlay';
+        
+        const popupContent = document.createElement('div');
+        popupContent.className = 'popup-content';
+        
+        // Create confetti effect
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti-container';
+        for (let i = 0; i < 50; i++) {
+          const confettiPiece = document.createElement('div');
+          confettiPiece.className = 'confetti';
+          confettiPiece.style.left = `${Math.random() * 100}%`;
+          confettiPiece.style.animationDelay = `${Math.random() * 3}s`;
+          confettiPiece.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 60%)`;
+          confetti.appendChild(confettiPiece);
+        }
+        
+        // Create popup content
+        const popupHeader = document.createElement('h2');
+        
+        if (isLiquidity) {
+          popupHeader.textContent = "Liquidity Added Successfully!";
+        } else {
+          popupHeader.textContent = "Congratulations!";
+        }
+        
+        popupHeader.style.color = '#10b981';
+        popupHeader.style.fontSize = '1.5rem';
+        popupHeader.style.marginBottom = '1rem';
+        
+        const popupText = document.createElement('p');
+        
+        if (isLiquidity) {
+          popupText.textContent = "Your liquidity has been added to the pool. You can view it in your Liquidity Portfolio.";
+        } else {
+          popupText.textContent = "Your token has been created successfully!";
+        }
+        
+        popupText.style.marginBottom = '1rem';
+        
+        const addressContainer = document.createElement('div');
+        addressContainer.style.backgroundColor = 'rgba(26, 32, 44, 0.7)';
+        addressContainer.style.padding = '1rem';
+        addressContainer.style.borderRadius = '0.5rem';
+        addressContainer.style.marginBottom = '1.5rem';
+        
+        const addressLabel = document.createElement('div');
+        
+        if (isLiquidity) {
+          addressLabel.textContent = "Pool address:";
+        } else {
+          addressLabel.textContent = "Your token address:";
+        }
+        
+        addressLabel.style.color = '#a0aec0';
+        addressLabel.style.marginBottom = '0.5rem';
+        
+        const addressValue = document.createElement('div');
+        addressValue.textContent = address;
+        addressValue.style.color = '#10b981';
+        addressValue.style.fontFamily = 'monospace';
+        addressValue.style.wordBreak = 'break-all';
+        
+        addressContainer.appendChild(addressLabel);
+        addressContainer.appendChild(addressValue);
+        
+        const closeButton = document.createElement('button');
+        closeButton.textContent = "Close";
+        closeButton.className = 'primary-button';
+        closeButton.style.backgroundColor = '#10b981';
+        closeButton.style.color = 'white';
+        
+        // Add elements to popup
+        popupContent.appendChild(confetti);
+        popupContent.appendChild(popupHeader);
+        popupContent.appendChild(popupText);
+        popupContent.appendChild(addressContainer);
+        popupContent.appendChild(closeButton);
+        
+        popupOverlay.appendChild(popupContent);
+        document.body.appendChild(popupOverlay);
+        
+        // Add close functionality
+        closeButton.addEventListener('click', () => {
+          document.body.removeChild(popupOverlay);
+          
+          // If it's a liquidity payment, navigate to the portfolio
+          if (isLiquidity) {
+            showScreen('liquidityPortfolioScreen');
+            
+            // Add the new liquidity pool to the list
+            addLiquidityPoolToPortfolio(state.currentLpTokenName, elements.liquidityAdder.solAmount.value);
+          }
+        });
+      }
+      
+      function addLiquidityPoolToPortfolio(tokenName, solAmount) {
+        // Create a new LP object
+        const poolData = {
+          token: tokenName,
+          tokenAmount: Math.floor(Math.random() * 50000) + 10000,
+          solAmount: parseFloat(solAmount),
+          dollarValue: (parseFloat(solAmount) * 167).toFixed(2),
+          apr: (Math.random() * 10 + 5).toFixed(1)
+        };
+        
+        // Add to user pools
+        state.userPools.push(poolData);
+        
+        // Show the pools
+        renderLiquidityPools();
+      }
+      
+      function renderLiquidityPools() {
+        if (state.userPools.length > 0) {
+          // Hide the "no liquidity" message
+          elements.liquidityPortfolio.noLiquidityMsg.style.display = 'none';
+          
+          // Show the liquidity list
+          elements.liquidityPortfolio.liquidityList.style.display = 'block';
+          
+          // Clear the existing list
+          elements.liquidityPortfolio.liquidityList.innerHTML = '';
+          
+          // Calculate total value
+          let totalValue = 0;
+          
+          // Add each pool to the list
+          state.userPools.forEach(pool => {
+            totalValue += parseFloat(pool.dollarValue);
+            
+            const poolItem = document.createElement('div');
+            poolItem.className = 'portfolio-item';
+            poolItem.dataset.token = pool.token;
+            
+            poolItem.innerHTML = `
+              <div class="portfolio-item-header">
+                <div class="pool-name">${pool.token}-SOL Pool</div>
+                <div class="pool-value">$${pool.dollarValue}</div>
+              </div>
+              <div class="pool-info">
+                <div>${pool.tokenAmount.toLocaleString()} ${pool.token} + ${pool.solAmount} SOL</div>
+                <div>APR: ${pool.apr}%</div>
+              </div>
+            `;
+            
+            // Add click handler for the pool item
+            poolItem.addEventListener('click', () => {
+              openWithdrawalModal(pool);
+            });
+            
+            elements.liquidityPortfolio.liquidityList.appendChild(poolItem);
+          });
+          
+          // Update the total balance
+          elements.liquidityPortfolio.balance.textContent = `$${totalValue.toFixed(2)}`;
+        } else {
+          // Show the "no liquidity" message
+          elements.liquidityPortfolio.noLiquidityMsg.style.display = 'block';
+          elements.liquidityPortfolio.liquidityList.style.display = 'none';
+          elements.liquidityPortfolio.balance.textContent = '$0.00';
+        }
+      }
+      
+      function openWithdrawalModal(pool) {
+        // Set the pool details in the modal
+        elements.withdrawalModal.token.textContent = pool.token;
+        elements.withdrawalModal.amount.textContent = `${pool.tokenAmount.toLocaleString()} ${pool.token}`;
+        elements.withdrawalModal.sol.textContent = `${pool.solAmount} SOL`;
+        elements.withdrawalModal.value.textContent = `$${pool.dollarValue}`;
+        
+        // Show the modal
+        elements.withdrawalModal.modal.classList.add('open');
+      }
+      
+      function closeWithdrawalModal() {
+        elements.withdrawalModal.modal.classList.remove('open');
+      }
+      
+      // Sidebar functions
+      function openSidebar() {
+        elements.sidebar.sidebar.classList.add('open');
+        elements.sidebar.backdrop.classList.add('open');
+      }
+      
+      function closeSidebar() {
+        elements.sidebar.sidebar.classList.remove('open');
+        elements.sidebar.backdrop.classList.remove('open');
+      }
+      
+      // Initialize event listeners
+      function initializeEventListeners() {
+        // Sidebar navigation
+        elements.sidebar.openBtn.addEventListener('click', openSidebar);
+        elements.sidebar.closeBtn.addEventListener('click', closeSidebar);
+        elements.sidebar.backdrop.addEventListener('click', closeSidebar);
+        
+        // Navigation items
+        elements.sidebar.navItems.forEach(item => {
+          item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const screenId = item.dataset.screen;
+            if (screenId) {
+              showScreen(screenId);
+            }
+          });
+        });
+        
+        // Create Token button (home screen)
+        elements.buttons.createTokenBtn.addEventListener('click', () => {
+          showScreen('tokenCreatorScreen');
+        });
+        
+        // Token Creator form
+        elements.tokenCreator.socialToggle.addEventListener('change', () => {
+          elements.tokenCreator.socialSection.style.display = elements.tokenCreator.socialToggle.checked ? 'block' : 'none';
+        });
+        
+        elements.tokenCreator.customCreator.addEventListener('change', () => {
+          elements.tokenCreator.creatorSection.style.display = elements.tokenCreator.customCreator.checked ? 'block' : 'none';
+          updateTotalCost();
+        });
+        
+        elements.tokenCreator.revokeMint.addEventListener('change', updateTotalCost);
+        elements.tokenCreator.revokeFreeze.addEventListener('change', updateTotalCost);
+        elements.tokenCreator.revokeMetadata.addEventListener('change', updateTotalCost);
+        
+        // Submit token button
+        elements.tokenCreator.submitBtn.addEventListener('click', () => {
+          const tokenName = elements.tokenCreator.name.value.trim();
+          
+          if (!tokenName) {
+            alert('Please enter a token name');
+            return;
+          }
+          
+          if (!elements.tokenCreator.symbol.value.trim()) {
+            alert('Please enter a token symbol');
+            return;
+          }
+          
+          const totalCost = updateTotalCost();
+          showPaymentScreen(`${tokenName} Token`, totalCost, false);
+        });
+        
+        // Liquidity Adder form
+        elements.liquidityAdder.slippageOptions.forEach(option => {
+          option.addEventListener('click', () => {
+            elements.liquidityAdder.slippageOptions.forEach(o => o.classList.remove('active'));
+            option.classList.add('active');
+          });
+        });
+        
+        // Add liquidity button
+        elements.liquidityAdder.addBtn.addEventListener('click', () => {
+          const lpTokenName = elements.liquidityAdder.tokenName.value.trim();
+          const lpTokenAmount = elements.liquidityAdder.tokenAmount.value.trim();
+          const lpSolAmount = parseFloat(elements.liquidityAdder.solAmount.value.trim() || 0);
+          
+          if (!lpTokenName) {
+            alert('Please enter a token name');
+            return;
+          }
+          
+          if (!lpTokenAmount) {
+            alert('Please enter the amount of tokens to add');
+            return;
+          }
+          
+          if (lpSolAmount < 0.3) {
+            alert('Minimum SOL amount is 0.3');
+            return;
+          }
+          
+          // Set the current LP token name for later use
+          state.currentLpTokenName = lpTokenName;
+          
+          // Show payment screen for the liquidity
+          showPaymentScreen(`${lpTokenName} Liquidity`, lpSolAmount, true);
+        });
+        
+        // Payment screen
+        elements.payment.backBtn.addEventListener('click', () => {
+          // Clear timers
+          clearTimeout(state.paymentTimer);
+          clearInterval(state.countdownInterval);
+          
+          // Go back to previous screen
+          if (state.isLiquidityPayment) {
+            showScreen('liquidityAdderScreen');
+          } else {
+            showScreen('tokenCreatorScreen');
+          }
+        });
+        
+        // Check payment button
+        elements.payment.checkBtn.addEventListener('click', () => {
+          // Hide previous status message
+          elements.payment.statusMsg.style.display = 'none';
+          elements.payment.tokenAddress.classList.remove('show');
+          
+          // Check if it's a liquidity payment or token payment
+          if (state.isLiquidityPayment) {
+            // For liquidity, use TIDE as the success token name for demonstration
+            if (state.currentLpTokenName.toUpperCase() === 'TIDE') {
+              elements.payment.statusMsg.textContent = 'Payment found! Your liquidity has been added successfully.';
+              elements.payment.statusMsg.className = 'status-message success';
+              elements.payment.statusMsg.style.display = 'block';
+              
+              // Generate a random pool address
+              const randomAddress = generateRandomSolanaAddress();
+              
+              // Show token address after a short delay
+              setTimeout(() => {
+                elements.payment.tokenAddressValue.textContent = randomAddress;
+                elements.payment.tokenAddress.classList.add('show');
+                
+                // Show the congratulations popup
+                showCongratsPopup(randomAddress, true);
+              }, 1000);
+            } else {
+              elements.payment.statusMsg.textContent = 'No payment found. Please send the required SOL to the address above.';
+              elements.payment.statusMsg.className = 'status-message error';
+              elements.payment.statusMsg.style.display = 'block';
+            }
+          } else {
+            // For token creation
+            const tokenName = elements.tokenCreator.name.value.trim();
+            
+            // Check if token name is "TIDE"
+            if (tokenName.toUpperCase() === 'TIDE') {
+              elements.payment.statusMsg.textContent = 'Payment found! Your token has been created successfully.';
+              elements.payment.statusMsg.className = 'status-message success';
+              elements.payment.statusMsg.style.display = 'block';
+              
+              // Generate a random token address
+              const randomAddress = generateRandomSolanaAddress();
+              
+              // Show token address after a short delay
+              setTimeout(() => {
+                elements.payment.tokenAddressValue.textContent = randomAddress;
+                elements.payment.tokenAddress.classList.add('show');
+                
+                // Show the congratulations popup
+                showCongratsPopup(randomAddress, false);
+              }, 1000);
+            } else {
+              elements.payment.statusMsg.textContent = 'No payment found. Please send the required SOL to the address above.';
+              elements.payment.statusMsg.className = 'status-message error';
+              elements.payment.statusMsg.style.display = 'block';
+            }
+          }
+        });
+        
+        // Wallet address copy button
+        document.querySelector('.wallet-buttons').addEventListener('click', (e) => {
+          const target = e.target.closest('.wallet-button');
+          if (target) {
+            // Get the full address from the data attribute
+            const fullAddress = elements.payment.walletAddress.dataset.fullAddress;
+            if (fullAddress) {
+              navigator.clipboard.writeText(fullAddress)
+                .then(() => {
+                  // Create temporary tooltip
+                  const tooltip = document.createElement('div');
+                  tooltip.textContent = 'Copied!';
+                  tooltip.style.position = 'absolute';
+                  tooltip.style.backgroundColor = '#10b981';
+                  tooltip.style.color = 'white';
+                  tooltip.style.padding = '0.25rem 0.5rem';
+                  tooltip.style.borderRadius = '0.25rem';
+                  tooltip.style.fontSize = '0.75rem';
+                  tooltip.style.bottom = '-1.5rem';
+                  tooltip.style.left = '50%';
+                  tooltip.style.transform = 'translateX(-50%)';
+                  tooltip.style.whiteSpace = 'nowrap';
+                  tooltip.style.zIndex = '10';
+                  
+                  // Add to the button and remove after a delay
+                  target.style.position = 'relative';
+                  target.appendChild(tooltip);
+                  setTimeout(() => {
+                    target.removeChild(tooltip);
+                  }, 2000);
+                });
+            }
+          }
+        });
+        
+        // Liquidity portfolio
+        elements.liquidityPortfolio.refreshBtn.addEventListener('click', () => {
+          // Reset the portfolio
+          state.userPools = [];
+          renderLiquidityPools();
+          
+          // Add keyboard listener for "^" key
+          document.addEventListener('keydown', function portfolioKeyHandler(e) {
+            if (e.key === '^') {
+              // Create a demo pool if there are none
+              if (state.userPools.length === 0) {
+                addLiquidityPoolToPortfolio('TIDE', 21.5);
+              }
+              document.removeEventListener('keydown', portfolioKeyHandler);
+            }
+          });
+        });
+        
+        // Withdrawal modal
+        elements.withdrawalModal.closeBtn.addEventListener('click', closeWithdrawalModal);
+        
+        elements.withdrawalModal.options.forEach(option => {
+          option.addEventListener('click', () => {
+            elements.withdrawalModal.options.forEach(o => o.classList.remove('active'));
+            option.classList.add('active');
+          });
+        });
+        
+        elements.withdrawalModal.confirmBtn.addEventListener('click', () => {
+          const walletAddress = elements.withdrawalModal.walletAddress.value.trim();
+          
+          if (!walletAddress) {
+            alert('Please enter your wallet address');
+            return;
+          }
+          
+          // Close the modal
+          closeWithdrawalModal();
+          
+          // Show success message
+          alert('Withdrawal successful! Funds will be sent to your wallet.');
+          
+          // Remove the pool from the list
+          const tokenName = elements.withdrawalModal.token.textContent;
+          state.userPools = state.userPools.filter(pool => pool.token !== tokenName);
+          
+          // Update the display
+          renderLiquidityPools();
+        });
+        
+        // File upload
+        elements.tokenCreator.logoInput.addEventListener('change', function(e) {
+          const fileName = e.target.files[0]?.name || 'No file selected';
+          const uploadText = e.target.parentElement.querySelector('.upload-text');
+          if (uploadText) {
+            uploadText.textContent = fileName;
+          }
+        });
+      }
+      
+      // Initialize the app
+      function init() {
+        // Set initial cost
+        updateTotalCost();
+        
+        // Set initial payment address
+        const initialAddress = getNextPaymentAddress();
+        elements.payment.walletAddress.textContent = formatAddressForDisplay(initialAddress);
+        elements.payment.walletAddress.dataset.fullAddress = initialAddress;
+        
+        // Set up event listeners
+        initializeEventListeners();
+      }
+      
+      // Start the app
+      init();
+    });
+  </script>
+</body>
+</html>
