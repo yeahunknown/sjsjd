@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+ <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
   <title>Solana Token Creator</title>
   <style>
     * {
@@ -32,21 +32,21 @@
       z-index: 10;
     }
     
-    /* Background Effects */
-    .bg-blur {
-      position: absolute;
-      top: -50%;
-      left: -20%;
-      width: 140%;
-      height: 200%;
-      background: rgb(76, 29, 149);
-      opacity: 0.05;
-      filter: blur(100px);
-      border-radius: 100%;
-      transform: rotate(-15deg);
-      z-index: 1;
-      overflow: hidden;
-    }
+ .bg-blur {
+  position: absolute;
+  top: -50%;
+  left: -20%;
+  width: 140%;
+  height: 200%;
+  max-height: 100vh;
+  background: rgb(76, 29, 149);
+  opacity: 0.05;
+  filter: blur(100px);
+  border-radius: 100%;
+  transform: rotate(-15deg);
+  z-index: 1;
+  overflow: hidden;
+}
     
     .blurry-text {
       position: absolute;
@@ -467,41 +467,40 @@
     }
     
     /* Logo Upload Area */
-    .logo-upload {
-      border: 2px dashed rgba(74, 85, 104, 0.7);
-      border-radius: 0.5rem;
-      padding: 1.5rem;
-      text-align: center;
-      background-color: rgba(26, 32, 44, 0.4);
-      position: relative;
-    }
-    
-    .logo-upload input[type="file"] {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      opacity: 0;
-      cursor: pointer;
-    }
-    
-    .upload-icon {
-      color: #a0aec0;
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-    }
-    
-    .upload-text {
-      color: #a0aec0;
-      margin-bottom: 0.5rem;
-    }
-    
-    .upload-subtext {
-      color: #718096;
-      font-size: 0.75rem;
-      margin-bottom: 1rem;
-    }
+  .logo-upload {
+  border: 2px dashed rgba(74, 85, 104, 0.7);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  text-align: center;
+  background-color: rgba(26, 32, 44, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  height: 180px;
+}
+
+.logo-upload input[type="file"] {
+  display: none; /* Fully hide it, safely */
+}
+
+.upload-icon {
+  color: #a0aec0;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.upload-text {
+  color: #a0aec0;
+  margin-bottom: 0.5rem;
+}
+
+.upload-subtext {
+  color: #718096;
+  font-size: 0.75rem;
+  margin-bottom: 1rem;
+}
     
     .browse-button {
       background-color: rgba(45, 55, 72, 1);
@@ -1644,25 +1643,19 @@
           </div>
         </div>
         
-        <div class="form-group">
-          <label>Logo (Optional)</label>
-          <div class="logo-upload">
-            <input type="file" id="tokenLogo" accept="image/png, image/jpeg">
-            <div class="upload-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 7.04c-.29-.3-1.15-.45-2.29.66C3.57 8.6 3 9.7 3 10.25c0 2.22 1.8 4.05 4 4.05z"></path>
-                <path d="M21 15.8c-2.2 0-4-1.6-4-3.5 0-1.06.4-2.4 1.5-3.2-1.45.35-2 1.5-2 2.25 0 .9 1 2.25 3 2.25" fill="currentColor"></path>
-                <path d="M3 15.8a4 4 0 0 0 4-3.5c0-1.06-.4-2.4-1.5-3.2 1.45.35 2 1.5 2 2.25 0 .9-1 2.25-3 2.25"></path>
-                <path d="M12 12v9"></path>
-                <path d="m16 16-4-4-4 4"></path>
-              </svg>
-            </div>
-            <p class="upload-text">Drag and drop your token logo here</p>
-            <p class="upload-subtext">PNG or JPG (Recommended size: 500x500px)</p>
-            <button class="browse-button">Browse Files</button>
-          </div>
-        </div>
-        
+    <div class="form-group">
+  <label>Logo (Optional)</label>
+
+  <!-- Wrap everything in a <label> -->
+  <label for="tokenLogo" class="logo-upload">
+    <div class="upload-icon">
+      <i class="fas fa-file-upload"></i> <!-- Font Awesome file upload icon -->
+    </div>
+    <div class="upload-text">Click to upload</div>
+    <div class="upload-subtext">PNG or JPEG up to 5MB</div>
+    <input type="file" id="tokenLogo" accept="image/png, image/jpeg">
+  </label>
+</div>
         <div class="toggle-container">
           <label class="toggle-switch">
             <input type="checkbox" id="socialTags">
